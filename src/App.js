@@ -7,7 +7,7 @@ import SignIn from './components/SignIn/index';
 import GoToSignIn from './components/GoToSignIn/GoToSignIn';
 import SignUp from './components/SignUp/index';
 
-const App = ({ history }) => {
+const App = (props) => {
 
   return (
     <AuthProvider>
@@ -32,4 +32,4 @@ const App = ({ history }) => {
   )
 }
 
-export default App;
+export default (App);
