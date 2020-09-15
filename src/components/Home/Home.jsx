@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import app from './../../firebase/base';
-import Aside from './../Aside/Aside';
 // import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
 import DishList from './../DishList/DishList';
 import firebase from 'firebase/app';
 import { firestore } from 'firebase/firestore';
 import { connect } from 'react-redux';
+import Aside from './../Aside/index';
 const db = firebase.firestore();
 
 const mapStateToProps = (state, ownProps) => {
@@ -31,14 +31,14 @@ const getData = (recipes) => {
 
 const Home = (props) => {
   const [data, updateData] = useState([]);
-  console.log(props);
   useEffect(() => {
     db.collection('All').get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
         props.getData(doc.data());
       })
-    })
-  }, [])
+    });
+    updateData(data => [...data, props.recipes]);
+  }, []);
 
   if (!data) {
     return (
@@ -46,6 +46,7 @@ const Home = (props) => {
     )
   }
   else {
+    console.log('props.recipes', props.recipes);
     console.log({ data });
     return (
       <div>
@@ -54,7 +55,7 @@ const Home = (props) => {
         <button onClick={() => app.auth().signOut()}>Sign out</button>
         </div>
         <Aside />
-        <DishList />
+        <DishList recipes={props.recipes} />
       </div>
     )
   }

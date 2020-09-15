@@ -1,9 +1,9 @@
 import React from 'react';
 
-const DishList = ({ getData, data }) => {
+const DishList = () => {
   return (
-    <div onClick={() => getData('Soups')}>
-      Dish list
+    <div>
+      test
     </div>
   )
 }
