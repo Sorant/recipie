@@ -16,7 +16,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    getData: (data) => {
+    getAllData: (data) => {
       dispatch(getData(data));
     }
   }
@@ -31,10 +31,22 @@ const getData = (recipes) => {
 
 const Home = (props) => {
   const [data, updateData] = useState([]);
-  useEffect(() => {
-    db.collection('All').get().then(querySnapshot => {
+  const [category, updateCategory] = useState('Main-dishes');
+
+  const chooseCategoryHandler = (choosenCategory) => {
+    updateCategory(choosenCategory);
+    db.collection('All').where('category', '==', `${choosenCategory}`).get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        props.getData(doc.data());
+        props.getAllData(doc.data());
+      })
+    });
+    updateData(data => [...data, props.recipes]);
+  }
+
+  useEffect(() => {
+    db.collection('All').where('category', '==', 'Soups').get().then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        props.getAllData(doc.data());
       })
     });
     updateData(data => [...data, props.recipes]);
@@ -46,15 +58,13 @@ const Home = (props) => {
     )
   }
   else {
-    console.log('props.recipes', props.recipes);
-    console.log({ data });
     return (
       <div>
         <div>
           Welcome home,
         <button onClick={() => app.auth().signOut()}>Sign out</button>
         </div>
-        <Aside />
+        <Aside chooseCategoryHandler={chooseCategoryHandler} />
         <DishList recipes={props.recipes} />
       </div>
     )

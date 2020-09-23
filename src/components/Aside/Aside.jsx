@@ -11,9 +11,11 @@ import MenuItem from './MenuItem/MenuItem';
 
 const imgArray = [dishIcon, soupsIcon, mainDishesIcon, saladsIcon, dessertsIcon, drinksIcon, alcoholicDrinksIcon];
 
-const menuItems = imgArray.map((item, key) => <MenuItem key={item} imgLink={item} name={item.split('').splice(item.indexOf('media/') + ('/media').length, item.length).join('')} />)
-
-const Aside = () => {
+const Aside = ({ chooseCategoryHandler }) => {
+  const menuItems = imgArray.map((item, index) => {
+    const name = item.split('').splice(item.indexOf('media/') + ('/media').length, item.length).join('');
+    return <MenuItem key={`${name}-${index}`} imgLink={item} name={name} chooseCategoryHandler={chooseCategoryHandler} />
+  })
 
   return (
     <nav className={styleModules.nav}>
