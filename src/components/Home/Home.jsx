@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import app from './../../firebase/base';
-// import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
 import DishList from './../DishList/DishList';
 import firebase from 'firebase/app';
 import { firestore } from 'firebase/firestore';
 import { connect } from 'react-redux';
 import Aside from './../Aside/index';
+import moduleStyles from './Home.module.scss';
 const db = firebase.firestore();
 
 const mapStateToProps = (state, ownProps) => {
@@ -18,6 +18,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     getAllData: (data) => {
       dispatch(getData(data));
+    },
+    clearAllData: () => {
+      dispatch(clearData());
     }
   }
 }
@@ -29,13 +32,19 @@ const getData = (recipes) => {
   }
 }
 
+const clearData = () => {
+  return {
+    type: 'CLEAR_RECIPES'
+  }
+}
+
 const Home = (props) => {
   const [data, updateData] = useState([]);
-  const [category, updateCategory] = useState('Main-dishes');
 
-  const chooseCategoryHandler = (choosenCategory) => {
-    updateCategory(choosenCategory);
-    db.collection('All').where('category', '==', `${choosenCategory}`).get().then(querySnapshot => {
+  const chooseCategoryHandler = (chosenCategory) => {
+    props.clearAllData();
+    updateData([]);
+    db.collection('All').where('category', '==', `${chosenCategory}`).get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
         props.getAllData(doc.data());
       })
@@ -44,7 +53,7 @@ const Home = (props) => {
   }
 
   useEffect(() => {
-    db.collection('All').where('category', '==', 'Soups').get().then(querySnapshot => {
+    db.collection('All').get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
         props.getAllData(doc.data());
       })
@@ -59,14 +68,16 @@ const Home = (props) => {
   }
   else {
     return (
-      <div>
-        <div>
+      <>
+        <header>
           Welcome home,
         <button onClick={() => app.auth().signOut()}>Sign out</button>
-        </div>
-        <Aside chooseCategoryHandler={chooseCategoryHandler} />
-        <DishList recipes={props.recipes} />
-      </div>
+        </header>
+        <main className={moduleStyles.homeMain}>
+          <Aside chooseCategoryHandler={chooseCategoryHandler} />
+          <DishList />
+        </main>
+      </>
     )
   }
 }

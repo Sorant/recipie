@@ -11,9 +11,9 @@ const rootReducer = (state = initialState, action) => {
       recipes: [...state.recipes, action.recipes]
     }
   }
-  if(action.type === 'GET_CURRENT_RECIPES'){
-    return{
-      
+  if (action.type === 'CLEAR_RECIPES') {
+    return {
+      recipes: []
     }
   }
   return state;
