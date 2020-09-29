@@ -5,6 +5,7 @@ import firebase from 'firebase/app';
 import { firestore } from 'firebase/firestore';
 import { connect } from 'react-redux';
 import Aside from './../Aside/index';
+import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
 import moduleStyles from './Home.module.scss';
 const db = firebase.firestore();
 
